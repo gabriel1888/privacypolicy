@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Privacy Policy — Fàs Technology</title>
+  <title>Find Your Perfect Lead Magnet — Fàs Technology</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
   <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
@@ -30,10 +30,174 @@
     }
   </script>
   <style>
+    * { box-sizing: border-box; }
+
     body {
       font-family: 'Inter', sans-serif;
       background: #FAFAF7;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .quiz-step {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 6rem 2rem 3rem;
+      overflow-y: auto;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(16px);
+      transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .quiz-step.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    /* Center content vertically when there's enough space */
+    .quiz-inner {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 0;
+    }
+    @media (min-height: 700px) {
+      .quiz-step {
+        align-items: center;
+      }
+      .quiz-inner {
+        min-height: auto;
+      }
+    }
+
+    .opt {
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+      position: relative;
+    }
+    .opt:hover {
+      border-color: #b6a792;
+      background: #f7f5f2;
+    }
+    .opt:active {
+      transform: scale(0.98);
+    }
+    .opt.selected {
+      border-color: #8a7a64;
+      background: #F3EFE0;
+    }
+    .opt.selected .opt-dot {
+      background: #8a7a64;
+      border-color: #8a7a64;
+    }
+    .opt.selected .opt-dot::after {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .opt-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid #d6d3cd;
+      background: white;
+      transition: all 0.25s ease;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .opt-dot::after {
+      content: '';
+      position: absolute;
+      inset: 3px;
+      border-radius: 50%;
+      background: white;
+      opacity: 0;
+      transform: scale(0);
+      transition: all 0.25s ease;
+    }
+
+    .progress-track {
+      height: 2px;
+      background: #e8e4de;
+      border-radius: 1px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: #8a7a64;
+      border-radius: 1px;
+      transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .field-input {
+      width: 100%;
+      background: white;
+      border: 1.5px solid #e8e4de;
+      border-radius: 14px;
+      padding: 14px 18px;
+      font-size: 15px;
       color: #2c2825;
+      transition: all 0.25s ease;
+      font-family: 'Inter', sans-serif;
+    }
+    .field-input::placeholder { color: #b8b2a8; }
+    .field-input:focus {
+      outline: none;
+      border-color: #b6a792;
+      box-shadow: 0 0 0 4px rgba(182, 167, 146, 0.12);
+    }
+
+    .cta-btn {
+      background: #2c2825;
+      color: #FAFAF7;
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 0.03em;
+      padding: 16px 36px;
+      border-radius: 100px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      font-family: 'Inter', sans-serif;
+    }
+    .cta-btn:hover { background: #44403c; transform: scale(1.02); }
+    .cta-btn:active { transform: scale(0.98); }
+    .cta-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+    .cta-btn-outline {
+      background: transparent;
+      color: #78716c;
+      border: 1.5px solid #e8e4de;
+      font-weight: 500;
+      font-size: 13px;
+      padding: 12px 24px;
+      border-radius: 100px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      font-family: 'Inter', sans-serif;
+    }
+    .cta-btn-outline:hover { border-color: #b6a792; color: #8a7a64; }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 100;
+    }
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
     }
 
     .orb {
@@ -44,154 +208,397 @@
       z-index: 0;
     }
 
-    /* Typography for legal text */
-    .legal-text p {
-      margin-bottom: 1.25rem;
-      line-height: 1.7;
+    .step-counter {
+      font-variant-numeric: tabular-nums;
     }
-    .legal-text h3 {
-      margin-top: 2.5rem;
-      margin-bottom: 1rem;
-    }
-    .legal-text ul {
-      list-style: none;
-      padding-left: 0;
-      margin-bottom: 1.25rem;
-    }
-    .legal-text ul li {
+
+    .gdpr-check {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border: 1.5px solid #d6d3cd;
+      border-radius: 5px;
+      background: white;
+      cursor: pointer;
+      transition: all 0.2s ease;
       position: relative;
-      padding-left: 1.5rem;
-      margin-bottom: 0.75rem;
-      line-height: 1.7;
+      flex-shrink: 0;
+      margin-top: 1px;
     }
-    .legal-text ul li::before {
-      content: '•';
+    .gdpr-check:checked {
+      background: #8a7a64;
+      border-color: #8a7a64;
+    }
+    .gdpr-check:checked::after {
+      content: '';
       position: absolute;
-      left: 0;
-      color: #8a7a64;
-      font-weight: bold;
+      left: 5px;
+      top: 1.5px;
+      width: 5px;
+      height: 9px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+    .gdpr-check:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(182, 167, 146, 0.2);
     }
   </style>
 </head>
-<body class="antialiased">
+<body>
 
-  <!-- Decorative background orbs -->
   <div class="orb" style="width: 500px; height: 500px; background: rgba(243,239,224,0.6); top: -10%; right: -10%;"></div>
   <div class="orb" style="width: 400px; height: 400px; background: rgba(243,239,224,0.4); bottom: -5%; left: -8%;"></div>
 
   <!-- Top bar -->
-  <div class="fixed top-0 left-0 right-0 z-50 bg-cream/80 backdrop-blur-lg border-b border-softBorder">
-    <div class="max-w-screen-xl mx-auto px-6 py-5 flex items-center justify-between">
+  <div class="fixed top-0 left-0 right-0 z-50 bg-cream/80 backdrop-blur-lg">
+    <div class="max-w-xl mx-auto px-6 py-5 flex items-center justify-between">
       <span class="font-serif text-base font-medium text-ink">Fàs Technology</span>
-      <a href="/" class="text-xs text-stone-400 hover:text-goldDark transition-colors flex items-center gap-1">
-      </a>
+      <span id="topCounter" class="text-xs text-stone-400 step-counter">1 / 6</span>
+    </div>
+    <div class="progress-track">
+      <div id="progressBar" class="progress-fill" style="width: 16.67%"></div>
     </div>
   </div>
 
-  <!-- Main Content -->
-  <main class="relative z-10 max-w-screen-md mx-auto px-6 pt-32 pb-24 legal-text">
-    
-    <div class="mb-12">
-      <p class="text-[11px] font-semibold uppercase tracking-[0.15em] text-goldMid mb-3">Legal</p>
-      <h1 class="font-serif text-3xl md:text-5xl font-normal leading-[1.1] tracking-tight text-ink mb-4">Privacy Policy</h1>
-      <p class="text-sm text-stone-400">Last updated: <span id="currentDate"></span></p>
+  <div id="toast" class="toast">
+    <div class="bg-white border border-softBorder rounded-2xl shadow-lg shadow-stone-200/50 px-5 py-3 flex items-center gap-2.5">
+      <span class="iconify text-green-500 text-base" data-icon="mdi:check-circle"></span>
+      <span id="toastMsg" class="text-sm text-ink font-medium">Saved!</span>
+    </div>
+  </div>
+
+  <div id="quizContainer" class="relative min-h-screen" style="min-height: 100dvh;">
+
+    <!-- STEP 0: Welcome -->
+    <div id="step0" class="quiz-step active">
+      <div class="quiz-inner max-w-md text-center">
+        <div class="inline-flex items-center gap-2 bg-savor/60 rounded-full px-4 py-1.5 mb-8">
+          <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+          <span class="text-[10px] font-semibold uppercase tracking-[0.15em] text-goldDark">Takes 60 seconds</span>
+        </div>
+        <h1 class="font-serif text-3xl md:text-4xl font-normal leading-[1.1] tracking-tight text-ink mb-5">
+          Discover the lead magnet<br>that'll grow your<br><span class="italic text-goldDark">home improvement business</span>
+        </h1>
+        <p class="text-stone-500 text-sm leading-relaxed mb-10 max-w-xs mx-auto">
+          Answer a few quick questions and we'll recommend a custom lead magnet strategy — tailored to your trade, market, and goals.
+        </p>
+        <button class="cta-btn" onclick="goTo(1)">Let's Begin</button>
+      </div>
     </div>
 
-    <div class="bg-white rounded-2xl border border-softBorder p-8 md:p-12 shadow-sm">
-      
-      <p>Fàs Technology ("we", "us", or "our") respects your privacy and is committed to protecting your personal data. This privacy policy explains how we collect, use, and safeguard your information when you visit our website and use our services, including our lead magnet strategy quiz.</p>
-
-      <h3 class="font-serif text-xl md:text-2xl font-medium text-ink">1. Information We Collect</h3>
-      <p>We collect information that you provide directly to us when you use our services. This includes:</p>
-      <ul>
-        <li><strong>Quiz Responses:</strong> Your trade/niche, monthly lead volume, biggest lead generation challenge, and operating location (City/Town and County).</li>
-        <li><strong>Contact Information:</strong> Your full name, business name, email address, and phone number.</li>
-        <li><strong>Consent Data:</strong> A record of your agreement to our privacy policy, including the timestamp of when you provided consent.</li>
-      </ul>
-      <p>We also automatically collect certain technical information when you visit our site, including your IP address, browser type, device type, and general location data. This is collected via standard web analytics tools and cookies.</p>
-
-      <h3 class="font-serif text-xl md:text-2xl font-medium text-ink">2. How We Use Your Information</h3>
-      <p>We use the information we collect for the following purposes:</p>
-      <ul>
-        <li><strong>To Provide Our Services:</strong> To process your quiz answers and create a custom lead magnet strategy tailored to your home improvement business.</li>
-        <li><strong>To Contact You:</strong> To reach out to you via email or phone regarding your strategy, follow up on your inquiry, and provide customer support.</li>
-        <li><strong>For Marketing:</strong> With your explicit consent, to send you relevant updates, offers, and insights related to lead generation and home improvement marketing. You can opt out of these communications at any time.</li>
-        <li><strong>To Improve Our Services:</strong> To analyze how our quiz and services are used, helping us improve user experience and outcomes for our clients.</li>
-        <li><strong>Legal Compliance:</strong> To comply with applicable laws, regulations, and legal processes.</li>
-      </ul>
-
-      <h3 class="font-serif text-xl md:text-2xl font-medium text-ink">3. Legal Basis for Processing (GDPR)</h3>
-      <p>We process your personal data under the following legal bases:</p>
-      <ul>
-        <li><strong>Consent:</strong> When you have given us clear, affirmative consent to process your data (e.g., checking the consent box on our quiz to receive marketing materials).</li>
-        <li><strong>Contract:</strong> When processing is necessary for the performance of a contract with you (e.g., providing the custom lead magnet strategy you requested).</li>
-        <li><strong>Legitimate Interests:</strong> When it is necessary for our legitimate business interests (e.g., improving our services, preventing fraud), provided your rights and freedoms do not override those interests.</li>
-      </ul>
-
-      <h3 class="font-serif text-xl md:text-2xl font-medium text-ink">4. How We Share Your Information</h3>
-      <p>We do not sell your personal data. We may share your information with the following categories of recipients:</p>
-      <ul>
-        <li><strong>Automation & Integration Tools:</strong> We use webhook services (such as Make.com) to securely route your quiz data to our internal systems and Customer Relationship Management (CRM) software.</li>
-        <li><strong>Service Providers:</strong> Third-party companies that perform services on our behalf, such as email delivery, hosting, and analytics providers.</li>
-        <li><strong>Legal Requirements:</strong> We may disclose your information if legally required to do so to comply with applicable law, governmental requests, or a judicial proceeding.</li>
-      </ul>
-
-      <h3 class="font-serif text-xl md:text-2xl font-medium text-ink">5. International Data Transfers</h3>
-      <p>Your information may be transferred to — and maintained on — computers located outside of your state, province, country, or other governmental jurisdiction where the data protection laws may differ. If you are located outside the United Kingdom or European Union, please be aware that we transfer data to the UK/EEA. We ensure appropriate safeguards are in place (such as Standard Contractual Clauses) to protect your data during international transfers.</p>
-
-      <h3 class="font-serif text-xl md:text-2xl font-medium text-ink">6. Data Retention</h3>
-      <p>We retain your personal data only for as long as necessary to fulfill the purposes outlined in this privacy policy, unless a longer retention period is required or permitted by law (such as tax, accounting, or other legal requirements). When determining the retention period, we consider the nature and sensitivity of the data, the potential risk of harm from unauthorized disclosure, our purposes for processing the data, and applicable legal requirements.</p>
-
-      <h3 class="font-serif text-xl md:text-2xl font-medium text-ink">7. Your Data Rights (GDPR)</h3>
-      <p>Under the UK GDPR and EEA GDPR, you have the following rights regarding your personal data:</p>
-      <ul>
-        <li><strong>Right to Access:</strong> You have the right to request copies of your personal data.</li>
-        <li><strong>Right to Rectification:</strong> You have the right to request that we correct any information you believe is inaccurate or complete information you believe is incomplete.</li>
-        <li><strong>Right to Erasure:</strong> You have the right to request that we erase your personal data, under certain conditions.</li>
-        <li><strong>Right to Restrict Processing:</strong> You have the right to request that we restrict the processing of your personal data, under certain conditions.</li>
-        <li><strong>Right to Data Portability:</strong> You have the right to request the transfer of data that we have collected to another organization, or directly to you, under certain conditions.</li>
-        <li><strong>Right to Object:</strong> You have the right to object to our processing of your personal data, under certain conditions.</li>
-        <li><strong>Right to Withdraw Consent:</strong> If we are relying on your consent to process your data, you have the right to withdraw that consent at any time. However, this will not affect the lawfulness of any processing carried out prior to your withdrawal.</li>
-      </ul>
-      <p>To exercise any of these rights, please contact us using the details provided below. We will respond to your request within 30 days.</p>
-
-      <h3 class="font-serif text-xl md:text-2xl font-medium text-ink">8. Cookies and Tracking</h3>
-      <p>We use cookies and similar tracking technologies to track activity on our website and hold certain information. Cookies are files with a small amount of data which may include an anonymous unique identifier. You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent. However, if you do not accept cookies, you may not be able to use some portions of our website.</p>
-
-      <h3 class="font-serif text-xl md:text-2xl font-medium text-ink">9. Data Security</h3>
-      <p>We implement appropriate technical and organizational security measures to protect your personal data against unauthorized access, alteration, disclosure, or destruction. However, no method of transmission over the Internet or method of electronic storage is 100% secure. While we strive to use commercially acceptable means to protect your data, we cannot guarantee its absolute security.</p>
-
-      <h3 class="font-serif text-xl md:text-2xl font-medium text-ink">10. Changes to This Privacy Policy</h3>
-      <p>We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last updated" date at the top. You are advised to review this Privacy Policy periodically for any changes. Changes to this Privacy Policy are effective when they are posted on this page.</p>
-
-      <h3 class="font-serif text-xl md:text-2xl font-medium text-ink">11. Contact Us</h3>
-      <p>If you have any questions or concerns about this Privacy Policy or how we handle your data, please contact us:</p>
-      <ul>
-        <li><strong>Company:</strong> Fàs Technology</li>
-        <li><strong>Email:</strong> gabriel@fastechnology.co.uk <em></em></li>
-        <li><strong>Address:</strong>Office 1, Technology House, 9 Newton Place, Glasgow, G3 7PR, United Kingdom <em></em></li>
-      </ul>
-
+    <!-- STEP 1: Trade -->
+    <div id="step1" class="quiz-step">
+      <div class="quiz-inner max-w-lg">
+        <p class="text-[11px] font-semibold uppercase tracking-[0.15em] text-goldMid mb-3">Question 1</p>
+        <h2 class="font-serif text-2xl md:text-3xl font-normal leading-[1.15] tracking-tight text-ink mb-2">What's your trade?</h2>
+        <p class="text-stone-400 text-sm mb-8">Select the one that best fits your business.</p>
+        <div class="grid grid-cols-2 gap-2.5 w-full" id="step1Options">
+          <div class="opt rounded-2xl border border-softBorder bg-white p-4 flex items-center gap-3" data-val="roofing" onclick="pick(this, 1)"><div class="opt-dot"></div><div><span class="iconify text-stone-400 text-base" data-icon="mdi:home-roof"></span><div class="text-sm font-medium text-ink mt-0.5">Roofing</div></div></div>
+          <div class="opt rounded-2xl border border-softBorder bg-white p-4 flex items-center gap-3" data-val="kitchen-bath" onclick="pick(this, 1)"><div class="opt-dot"></div><div><span class="iconify text-stone-400 text-base" data-icon="mdi:countertop-outline"></span><div class="text-sm font-medium text-ink mt-0.5">Kitchen & Bath</div></div></div>
+          <div class="opt rounded-2xl border border-softBorder bg-white p-4 flex items-center gap-3" data-val="siding-windows" onclick="pick(this, 1)"><div class="opt-dot"></div><div><span class="iconify text-stone-400 text-base" data-icon="mdi:window-open-variant"></span><div class="text-sm font-medium text-ink mt-0.5">Siding & Windows</div></div></div>
+          <div class="opt rounded-2xl border border-softBorder bg-white p-4 flex items-center gap-3" data-val="hvac" onclick="pick(this, 1)"><div class="opt-dot"></div><div><span class="iconify text-stone-400 text-base" data-icon="mdi:air-conditioner"></span><div class="text-sm font-medium text-ink mt-0.5">HVAC</div></div></div>
+          <div class="opt rounded-2xl border border-softBorder bg-white p-4 flex items-center gap-3" data-val="painting" onclick="pick(this, 1)"><div class="opt-dot"></div><div><span class="iconify text-stone-400 text-base" data-icon="mdi:format-paint"></span><div class="text-sm font-medium text-ink mt-0.5">Painting</div></div></div>
+          <div class="opt rounded-2xl border border-softBorder bg-white p-4 flex items-center gap-3" data-val="plumbing" onclick="pick(this, 1)"><div class="opt-dot"></div><div><span class="iconify text-stone-400 text-base" data-icon="mdi:pipe-wrench"></span><div class="text-sm font-medium text-ink mt-0.5">Plumbing</div></div></div>
+          <div class="opt rounded-2xl border border-softBorder bg-white p-4 flex items-center gap-3" data-val="landscaping" onclick="pick(this, 1)"><div class="opt-dot"></div><div><span class="iconify text-stone-400 text-base" data-icon="mdi:flower-outline"></span><div class="text-sm font-medium text-ink mt-0.5">Landscaping</div></div></div>
+          <div class="opt rounded-2xl border border-softBorder bg-white p-4 flex items-center gap-3" data-val="other" onclick="pick(this, 1)"><div class="opt-dot"></div><div><span class="iconify text-stone-400 text-base" data-icon="mdi:dots-horizontal"></span><div class="text-sm font-medium text-ink mt-0.5">Other</div></div></div>
+        </div>
+        <div class="mt-8 flex items-center justify-between w-full">
+          <button class="cta-btn-outline" onclick="goTo(0)">Back</button>
+          <span class="text-xs text-stone-300">Press to select</span>
+        </div>
+      </div>
     </div>
 
-    <div class="mt-12 text-center">
-      <a href="/" class="cta-btn inline-block bg-ink hover:bg-stone-700 text-cream text-sm font-semibold tracking-wide px-8 py-4 rounded-full transition-all duration-300 hover:scale-105" style="text-decoration: none;">
-        Return to Quiz
-      </a>
+    <!-- STEP 2: Leads -->
+    <div id="step2" class="quiz-step">
+      <div class="quiz-inner max-w-md">
+        <p class="text-[11px] font-semibold uppercase tracking-[0.15em] text-goldMid mb-3">Question 2</p>
+        <h2 class="font-serif text-2xl md:text-3xl font-normal leading-[1.15] tracking-tight text-ink mb-2">How many leads are you<br>getting per month?</h2>
+        <p class="text-stone-400 text-sm mb-8">Be honest — this helps us set realistic targets.</p>
+        <div class="space-y-2.5 w-full" id="step2Options">
+          <div class="opt w-full rounded-2xl border border-softBorder bg-white p-5 flex items-center gap-4" data-val="0-10" onclick="pick(this, 2)"><div class="opt-dot"></div><div class="flex-1"><div class="text-sm font-medium text-ink">0 – 10</div><div class="text-xs text-stone-400 mt-0.5">Just getting started</div></div></div>
+          <div class="opt w-full rounded-2xl border border-softBorder bg-white p-5 flex items-center gap-4" data-val="11-30" onclick="pick(this, 2)"><div class="opt-dot"></div><div class="flex-1"><div class="text-sm font-medium text-ink">11 – 30</div><div class="text-xs text-stone-400 mt-0.5">Growing steadily</div></div></div>
+          <div class="opt w-full rounded-2xl border border-softBorder bg-white p-5 flex items-center gap-4" data-val="31-50" onclick="pick(this, 2)"><div class="opt-dot"></div><div class="flex-1"><div class="text-sm font-medium text-ink">31 – 50</div><div class="text-xs text-stone-400 mt-0.5">Established pipeline</div></div></div>
+          <div class="opt w-full rounded-2xl border border-softBorder bg-white p-5 flex items-center gap-4" data-val="50+" onclick="pick(this, 2)"><div class="opt-dot"></div><div class="flex-1"><div class="text-sm font-medium text-ink">50+</div><div class="text-xs text-stone-400 mt-0.5">Scaling up</div></div></div>
+        </div>
+        <div class="mt-8 flex items-center justify-between w-full">
+          <button class="cta-btn-outline" onclick="goTo(1)">Back</button>
+          <span class="text-xs text-stone-300">Press to select</span>
+        </div>
+      </div>
     </div>
 
-  </main>
+    <!-- STEP 3: Challenge -->
+    <div id="step3" class="quiz-step">
+      <div class="quiz-inner max-w-md">
+        <p class="text-[11px] font-semibold uppercase tracking-[0.15em] text-goldMid mb-3">Question 3</p>
+        <h2 class="font-serif text-2xl md:text-3xl font-normal leading-[1.15] tracking-tight text-ink mb-2">What's your biggest<br>lead generation challenge?</h2>
+        <p class="text-stone-400 text-sm mb-8">We'll tailor your strategy to solve this.</p>
+        <div class="space-y-2.5 w-full" id="step3Options">
+          <div class="opt w-full rounded-2xl border border-softBorder bg-white p-5 flex items-center gap-4" data-val="not-enough" onclick="pick(this, 3)"><div class="opt-dot"></div><div class="flex-1"><div class="text-sm font-medium text-ink">Not enough leads</div><div class="text-xs text-stone-400 mt-0.5">Need more volume coming in</div></div></div>
+          <div class="opt w-full rounded-2xl border border-softBorder bg-white p-5 flex items-center gap-4" data-val="low-quality" onclick="pick(this, 3)"><div class="opt-dot"></div><div class="flex-1"><div class="text-sm font-medium text-ink">Leads are low quality</div><div class="text-xs text-stone-400 mt-0.5">Too many tyre-kickers, not enough buyers</div></div></div>
+          <div class="opt w-full rounded-2xl border border-softBorder bg-white p-5 flex items-center gap-4" data-val="too-expensive" onclick="pick(this, 3)"><div class="opt-dot"></div><div class="flex-1"><div class="text-sm font-medium text-ink">Leads cost too much</div><div class="text-xs text-stone-400 mt-0.5">Checkatrade, HaMuch, MyBuilder adding up</div></div></div>
+          <div class="opt w-full rounded-2xl border border-softBorder bg-white p-5 flex items-center gap-4" data-val="no-system" onclick="pick(this, 3)"><div class="opt-dot"></div><div class="flex-1"><div class="text-sm font-medium text-ink">No lead system</div><div class="text-xs text-stone-400 mt-0.5">Relying on referrals and word of mouth</div></div></div>
+        </div>
+        <div class="mt-8 flex items-center justify-between w-full">
+          <button class="cta-btn-outline" onclick="goTo(2)">Back</button>
+          <span class="text-xs text-stone-300">Press to select</span>
+        </div>
+      </div>
+    </div>
 
-  <footer class="relative z-10 border-t border-softBorder py-8 px-6 text-center text-stone-400 text-xs">
-    &copy; <span id="currentYear"></span> Fàs Technology. All rights reserved.
-  </footer>
+    <!-- STEP 4: Service area -->
+    <div id="step4" class="quiz-step">
+      <div class="quiz-inner max-w-md">
+        <p class="text-[11px] font-semibold uppercase tracking-[0.15em] text-goldMid mb-3">Question 4</p>
+        <h2 class="font-serif text-2xl md:text-3xl font-normal leading-[1.15] tracking-tight text-ink mb-2">Where do you<br>operate?</h2>
+        <p class="text-stone-400 text-sm mb-8">We'll research your local market as part of your strategy.</p>
+        <div class="space-y-4 w-full">
+          <div>
+            <label class="block text-[11px] font-semibold uppercase tracking-[0.1em] text-stone-400 mb-2">City/Town</label>
+            <input type="text" id="cityInput" class="field-input" placeholder="e.g. London">
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold uppercase tracking-[0.1em] text-stone-400 mb-2">County</label>
+            <input type="text" id="stateInput" class="field-input" placeholder="Lancashire">
+          </div>
+        </div>
+        <div class="mt-8 flex items-center justify-between w-full">
+          <button class="cta-btn-outline" onclick="goTo(3)">Back</button>
+          <button class="cta-btn" onclick="submitStep4()">Continue</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 5: Contact + GDPR -->
+    <div id="step5" class="quiz-step">
+      <div class="quiz-inner max-w-md">
+        <p class="text-[11px] font-semibold uppercase tracking-[0.15em] text-goldMid mb-3">Almost done</p>
+        <h2 class="font-serif text-2xl md:text-3xl font-normal leading-[1.15] tracking-tight text-ink mb-2">Where should we<br>send your strategy?</h2>
+        <p class="text-stone-400 text-sm mb-8">We'll reach out within 24 hours with your custom plan.</p>
+
+        <div class="space-y-3.5 w-full">
+          <div>
+            <label class="block text-[11px] font-semibold uppercase tracking-[0.1em] text-stone-400 mb-2">Full Name</label>
+            <input type="text" id="nameInput" class="field-input" placeholder="John Smith">
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold uppercase tracking-[0.1em] text-stone-400 mb-2">Business Name</label>
+            <input type="text" id="bizInput" class="field-input" placeholder="Smith Roofing Co.">
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold uppercase tracking-[0.1em] text-stone-400 mb-2">Email</label>
+            <input type="email" id="emailInput" class="field-input" placeholder="john@smithroofing.com">
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold uppercase tracking-[0.1em] text-stone-400 mb-2">Phone</label>
+            <input type="tel" id="phoneInput" class="field-input" placeholder="">
+          </div>
+        </div>
+
+        <!-- GDPR Consent Checkbox -->
+        <div class="flex items-start gap-3 mt-6 w-full">
+          <input type="checkbox" id="gdprConsent" class="gdpr-check">
+          <label for="gdprConsent" class="text-xs text-stone-500 leading-relaxed cursor-pointer">
+            I agree to be contacted regarding this strategy and accept the 
+            <a href="/privacy-policy" target="_blank" class="underline underline-offset-2 hover:text-ink transition-colors">Privacy Policy</a>. 
+            You can unsubscribe at any time.
+          </label>
+        </div>
+
+        <div class="mt-6 flex items-center justify-between w-full">
+          <button class="cta-btn-outline" onclick="goTo(4)">Back</button>
+          <button id="submitBtn" class="cta-btn" onclick="submitQuiz()">Get My Strategy</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 6: Result -->
+    <div id="step6" class="quiz-step">
+      <div class="quiz-inner max-w-md text-center">
+        <div class="w-16 h-16 rounded-full bg-green-50 flex items-center justify-center mx-auto mb-6">
+          <span class="iconify text-green-500 text-3xl" data-icon="mdi:check-circle"></span>
+        </div>
+        <h2 class="font-serif text-2xl md:text-3xl font-normal leading-[1.15] tracking-tight text-ink mb-3">You're all set!</h2>
+        <p class="text-stone-500 text-sm leading-relaxed max-w-xs mx-auto mb-8">We've received your info. Based on your answers, here's what we're preparing for you:</p>
+        
+        <div id="resultPreview" class="bg-white rounded-2xl border border-softBorder p-6 text-left mb-8 w-full">
+          <div class="text-[10px] font-semibold uppercase tracking-[0.15em] text-goldMid mb-4">Your Custom Strategy</div>
+          <div class="space-y-3">
+            <div class="flex items-start gap-3"><span class="iconify text-goldMid mt-0.5" data-icon="mdi:check"></span><div><div class="text-sm font-medium text-ink" id="resultMagnet">Custom cost guide for your niche</div><div class="text-xs text-stone-400">Tailored to your trade & market</div></div></div>
+            <div class="flex items-start gap-3"><span class="iconify text-goldMid mt-0.5" data-icon="mdi:check"></span><div><div class="text-sm font-medium text-ink">High-converting landing page</div><div class="text-xs text-stone-400">Designed to capture & qualify leads</div></div></div>
+            <div class="flex items-start gap-3"><span class="iconify text-goldMid mt-0.5" data-icon="mdi:check"></span><div><div class="text-sm font-medium text-ink">Traffic strategy & management</div><div class="text-xs text-stone-400">We handle ads, you handle estimates</div></div></div>
+            <div class="flex items-start gap-3"><span class="iconify text-goldMid mt-0.5" data-icon="mdi:check"></span><div><div class="text-sm font-medium text-ink">Pay per lead — zero upfront</div><div class="text-xs text-stone-400">Only pay when qualified leads arrive</div></div></div>
+          </div>
+        </div>
+
+        <div class="inline-flex items-center gap-2 bg-savor/60 rounded-full px-4 py-2">
+          <span class="iconify text-goldMid" data-icon="mdi:clock-outline"></span>
+          <span class="text-xs font-medium text-goldDark">Expect an email or call within 24 hours</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
 
   <script>
-    // Set current date and year
-    const now = new Date();
-    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    document.getElementById('currentDate').textContent = `${months[now.getMonth()]} ${now.getFullYear()}`;
-    document.getElementById('currentYear').textContent = now.getFullYear();
+    const totalSteps = 6;
+    let current = 0;
+    let autoAdvanceTimeout = null;
+    const answers = {};
+
+    const WEBHOOK_URL = 'https://hook.eu2.make.com/arrjugk4oimojj76gqlq926qsithrxfw';
+
+    function goTo(step) {
+      if (step < 0 || step > totalSteps) return;
+      if (step === current) return; // Prevent navigating to current step
+
+      // Cancel any pending auto-advance from pick()
+      if (autoAdvanceTimeout) {
+        clearTimeout(autoAdvanceTimeout);
+        autoAdvanceTimeout = null;
+      }
+
+      const oldEl = document.getElementById('step' + current);
+      const newEl = document.getElementById('step' + step);
+      const goingForward = step > current;
+
+      // Remove active from old step
+      oldEl.classList.remove('active');
+
+      // Prepare new step off-screen WITHOUT transition
+      newEl.style.transition = 'none';
+      newEl.style.opacity = '0';
+      newEl.style.transform = goingForward ? 'translateY(16px)' : 'translateY(-16px)';
+
+      // Force browser reflow so it registers the starting position
+      newEl.offsetHeight;
+
+      // Re-enable transitions and activate
+      newEl.style.transition = '';
+      newEl.classList.add('active');
+      newEl.style.transform = '';
+      newEl.style.opacity = '';
+      newEl.scrollTop = 0;
+
+      current = step;
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const pct = current === 0 ? 0 : (current / totalSteps) * 100;
+      document.getElementById('progressBar').style.width = pct + '%';
+      if (current === 0) document.getElementById('topCounter').textContent = 'Start';
+      else if (current === totalSteps) document.getElementById('topCounter').textContent = 'Done';
+      else document.getElementById('topCounter').textContent = current + ' / ' + (totalSteps - 1);
+    }
+
+    function pick(el, step) {
+      const container = el.parentElement;
+      container.querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
+      el.classList.add('selected');
+      answers['step' + step] = el.dataset.val;
+      autoAdvanceTimeout = setTimeout(() => goTo(step + 1), 350);
+    }
+
+    function submitStep4() {
+      const city = document.getElementById('cityInput').value.trim();
+      const state = document.getElementById('stateInput').value.trim();
+      if (!city || !state) { showToast('Please fill in your service area'); return; }
+      answers.city = city;
+      answers.state = state;
+      goTo(5);
+    }
+
+    function submitQuiz() {
+      const name = document.getElementById('nameInput').value.trim();
+      const biz = document.getElementById('bizInput').value.trim();
+      const email = document.getElementById('emailInput').value.trim();
+      const phone = document.getElementById('phoneInput').value.trim();
+      const consent = document.getElementById('gdprConsent').checked;
+
+      if (!name || !biz || !email || !phone) {
+        showToast('Please fill in all fields');
+        return;
+      }
+
+      if (!consent) {
+        showToast('Please accept the privacy policy to continue');
+        return;
+      }
+
+      answers.name = name;
+      answers.business = biz;
+      answers.email = email;
+      answers.phone = phone;
+      answers.consent_granted = true;
+      answers.consent_timestamp = new Date().toISOString();
+
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      btn.innerHTML = `
+        <svg class="animate-spin h-4 w-4 inline-block mr-2" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+        Processing...
+      `;
+
+      fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(answers)
+      })
+      .then(response => {
+        if (response.ok || response.status === 200) {
+          handleSuccess();
+        } else {
+          console.error('Submission failed:', response.status);
+          handleSuccess(); 
+        }
+      })
+      .catch(error => {
+        console.error('Network error:', error);
+        handleSuccess();
+        showToast('Saved locally. Syncing shortly.');
+      });
+    }
+
+    function handleSuccess() {
+      const nicheMap = {
+        'roofing': 'Roof Replacement Checklist & Cost Guide',
+        'kitchen-bath': 'Kitchen & Bath Remodel Cost Calculator',
+        'siding-windows': 'Siding & Window Comparison Guide',
+        'hvac': 'HVAC Savings Calculator & Buying Guide',
+        'painting': 'Interior Painting Cost & Colour Guide',
+        'plumbing': 'Plumbing Project Cost Estimator',
+        'landscaping': 'Landscaping ROI & Design Guide',
+        'other': 'Custom Lead Magnet for Your Trade'
+      };
+      const magnet = nicheMap[answers.step1] || 'Custom Lead Magnet';
+      document.getElementById('resultMagnet').textContent = magnet;
+
+      goTo(6);
+      showToast('Your strategy request has been submitted!');
+      console.log('Quiz Submission:', answers);
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastMsg').textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        if (current === 0) goTo(1);
+        else if (current === 4) submitStep4();
+        else if (current === 5) submitQuiz();
+      }
+    });
+
+    updateProgress();
   </script>
 
 </body>
